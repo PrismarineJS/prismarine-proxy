@@ -11,6 +11,12 @@
 
 Provide features to build proxies using Prismarine modules
 
+## Contribute
+
+You're interested to help build this library ? Great !
+
+Either add [examples](https://github.com/PrismarineJS/prismarine-proxy/tree/master/examples) of cool proxies, or open [issues](https://github.com/PrismarineJS/prismarine-proxy/issues) to describe your ideas.
+
 ## Roadmap
 
 Provide features to build low and high level proxies, see https://github.com/PrismarineJS/node-minecraft-protocol/issues/712 for details.
