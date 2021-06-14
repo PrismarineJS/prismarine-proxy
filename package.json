@@ -26,11 +26,10 @@
   "homepage": "https://github.com/PrismarineJS/prismarine-proxy#readme",
   "devDependencies": {
     "jest": "^27.0.4",
-    "require-self": "^0.2.3",
     "standard": "^16.0.1"
   },
   "dependencies": {
-    "buffer-equal": "^1.0.0",
+    "debug": "^4.3.1",
     "minecraft-protocol": "^1.13.0"
   }
 }
