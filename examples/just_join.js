@@ -1,17 +1,15 @@
 const { makeProxy } = require('../index')
-const proxy = makeProxy({ host: '95.111.249.143', port: 10000, version: '1.12.2' }, {}, toClient, toServer)
+const proxy = makeProxy({ destination: { host: 'cosmicsky.com' }, version: '1.12.2' })
 
-function toClient ({ data, meta }) {
-  if (meta.name === 'chat') {
-    console.log(proxy)
-    console.log('Chat message received')
+proxy.on('incoming', (data, meta) => {
+  // write incoming packet to all clients
+  for (const client of Object.values(proxy.clients)) {
+    client.write(meta.name, data)
   }
-  return { data, meta }
-}
-
-function toServer ({ data, meta }) {
-  if (meta.name === 'chat') {
-    console.log('Chat message sent')
-  }
-  return { data, meta }
-}
+})
+// only send packets from first client that joins
+proxy.once('client_connected', client => {
+  client.on('outgoing', async (data, meta) => {
+    proxy.targetClient.write(meta.name, data)
+  })
+})
