@@ -39,10 +39,9 @@ function makeProxy ({
       debug(err.stack)
       if (!endedTargetClient) { proxy.targetClient.end('Error') }
     })
-    console.log('Index: ' + index)
-    if (index === 0) {
-      makeProxyServer()
-    }
+    makeProxyServer()
+    // if (index === 0) {
+    // }
     // outgoing packets
     client.on('packet', async (data, meta) => {
       if (!(proxy.targetClient.state === mc.states.PLAY && meta.state === mc.states.PLAY) && !endedTargetClient) return
