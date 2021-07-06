@@ -1,78 +1,70 @@
 const mc = require('minecraft-protocol')
 const debug = require('debug')('prismarine-proxy')
+const EventEmitter = require('events')
 
-/**
- * handleIncoming's signature is (packetData, packetMeta) => {} (expects an object returned with a data and a meta property)
- *
- * handleOutgoing's signature is (packetData, packetMeta) => {} (expects an object returned with a data and a meta property)
- * @param {{host: string, port: number, version?: string}} destination
- * @param {{host: string, port: number, version?: string}} localServer
- * @param {Function} handleIncoming
- * @param {Function} handleOutgoing
- * @returns {{toClient: import('minecraft-protocol').Client, toServer: import('minecraft-protocol').Server}}
- */
-function makeProxy (destination = {}, localServer = {}, handleIncoming, handleOutgoing) {
-  if (!destination.host) destination.host = 'localhost'
-  if (!destination.port) destination.port = 25565
-  if (!localServer.host) localServer.host = 'localhost'
-  if (!localServer.port) localServer.port = 25566
-  if (!localServer.version) localServer.version = destination.version
-  const proxy = {}
+// TODO: make autoversion for server version if the version isn't passed
+function makeProxy ({
+  destination: { host: destinationHost = 'localhost', port: destinationPort = 25565 } = {},
+  proxy: { host: proxyHost = 'localhost', port: proxyPort = 25566 } = {},
+  version = false
+} = {}) {
+  const proxy = new EventEmitter()
+  proxy.version = version
   proxy.clients = {}
 
-  proxy.server = mc.createServer({
+  proxy.proxyServer = mc.createServer({
     'online-mode': false,
-    host: localServer.host,
-    port: localServer.port,
+    host: proxyHost,
+    port: proxyPort,
     keepAlive: false,
-    version: destination.version
+    version: proxy.version
   })
 
-  proxy.server.on('login', (client) => {
-    proxy.clients[Object.keys(proxy.clients).length] = client
+  proxy.proxyServer.on('login', (client) => {
+    const index = Object.keys(proxy.clients).length
+    proxy.clients[index] = client
+    proxy.emit('client_connected', client, index)
     const addr = client.socket.remoteAddress
-    debug('Incoming connection', '(' + addr + ')')
+    debug(`Incoming connection (${addr})`)
     let endedClient = false
     const endedTargetClient = false
     client.on('end', () => {
       endedClient = true
-      debug('Connection closed by client', '(' + addr + ')')
-      if (!endedTargetClient) { targetClient.end('End') }
+      debug(`Connection closed by client ${index} (${addr})`)
+      if (!endedTargetClient) { proxy.targetClient.end('End') }
     })
     client.on('error', (err) => {
       endedClient = true
-      debug('Connection error by client', '(' + addr + ')')
+      debug(`Connection error by client (${addr})`)
       debug(err.stack)
-      if (!endedTargetClient) { targetClient.end('Error') }
+      if (!endedTargetClient) { proxy.targetClient.end('Error') }
     })
-    const targetClient = mc.createClient({
-      host: destination.host,
-      port: destination.port,
-      version: destination.version,
-      username: client.username,
-      keepAlive: false
-    })
+    makeProxyServer()
+    // if (index === 0) {
+    // }
     // outgoing packets
     client.on('packet', async (data, meta) => {
-      if (targetClient.state === mc.states.PLAY && meta.state === mc.states.PLAY) {
-        if (!endedTargetClient) {
-          const newPacket = await handleOutgoing({ data, meta })
-          targetClient.write(newPacket.meta.name, newPacket.data)
-        }
-      }
+      if (!(proxy.targetClient.state === mc.states.PLAY && meta.state === mc.states.PLAY) && !endedTargetClient) return
+      client.emit('outgoing', data, meta)
     })
-    // incoming packets
-    targetClient.on('packet', async (data, meta) => {
-      if (meta.state === mc.states.PLAY && client.state === mc.states.PLAY) {
-        if (!endedClient) {
-          const newPacket = await handleIncoming({ data, meta })
-          client.write(newPacket.meta.name, newPacket.data)
-          if (meta.name === 'set_compression') {
-            client.compressionThreshold = data.threshold
-          }
+    function makeProxyServer () {
+      proxy.targetClient = mc.createClient({
+        host: destinationHost,
+        port: destinationPort,
+        version: proxy.version,
+        username: client.username,
+        keepAlive: false
+      })
+
+      // incoming packets
+      proxy.targetClient.on('packet', async (data, meta) => {
+        if (!(proxy.targetClient.state === mc.states.PLAY && meta.state === mc.states.PLAY) && !endedClient) return
+        if (meta.name === 'set_compression') {
+          client.compressionThreshold = data.threshold
         }
-      }
-    })
+        proxy.emit('incoming', data, meta)
+      })
+    }
   })
   return proxy
 }
