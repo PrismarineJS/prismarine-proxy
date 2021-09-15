@@ -17,7 +17,7 @@ interface ProxyEvents {
     end: (username: string) => void;
 }
 declare const ProxyHandler_base: new () => TypedEmitter<ProxyEvents>;
-class InstantConnectProxy extends ProxyHandler_base {
+declare class InstantConnectProxy extends ProxyHandler_base {
     options: ServerOptions;
     server?: Server;
     toServerClients: Map<number, Client>;
