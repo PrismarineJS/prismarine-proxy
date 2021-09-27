@@ -1,6 +1,9 @@
 const EventEmitter = require('events')
 const { createServer, createClient } = require('minecraft-protocol')
+const packets = require('minecraft-packets').pc
+const mcDataLoader = require('minecraft-data')
 const PLAY_STATE = 'play'
+const getPacket = (ver, name) => packets[ver]['from-server'][name][0].json
 class InstantConnectProxy extends EventEmitter {
   constructor (options) {
     super()
@@ -16,15 +19,8 @@ class InstantConnectProxy extends EventEmitter {
 
   onLogin (toClient) {
     // until the proxyClient logs in, lets send a login packet
-    toClient.write('login', {
-      entityId: toClient.id,
-      gameMode: 0,
-      dimension: 0,
-      difficulty: 1,
-      maxPlayers: 20,
-      levelType: 'default',
-      reducedDebugInfo: false
-    })
+    const ver = mcDataLoader(toClient.version).version.minecraftVersion
+    toClient.write('login', { ...getPacket(ver, 'login'), entityId: toClient.id })
 
     const toServer = createClient({
       ...this.options.clientOptions,
@@ -39,16 +35,22 @@ class InstantConnectProxy extends EventEmitter {
       this.emit('start', toClient, toServer)
       const dimension = data.dimension === 0 ? -1 : 0
       toClient.write('respawn', {
-        dimension,
-        difficulty: data.difficulty,
-        gamemode: data.gameMode,
-        levelType: data.levelType
+        ...getPacket(ver, 'respawn'),
+        ...{
+          dimension,
+          difficulty: data.difficulty,
+          gamemode: data.gameMode,
+          levelType: data.levelType
+        }
       })
-      toClient.write('respawn', {
-        dimension: data.dimension,
-        difficulty: data.difficulty,
-        gamemode: data.gameMode,
-        levelType: data.levelType
+      toClient.write('login', {
+        ...getPacket(ver, 'respawn'),
+        ...{
+          dimension: data.dimension,
+          difficulty: data.difficulty,
+          gamemode: data.gameMode,
+          levelType: data.levelType
+        }
       })
     })
 
