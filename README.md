@@ -3,19 +3,8 @@
 [![NPM version](https://img.shields.io/npm/v/prismarine-proxy.svg)](http://npmjs.com/package/prismarine-proxy)
 [![Build Status](https://github.com/PrismarineJS/prismarine-proxy/workflows/CI/badge.svg)](https://github.com/PrismarineJS/prismarine-proxy/actions?query=workflow%3A%22CI%22)
 [![Discord](https://img.shields.io/badge/chat-on%20discord-brightgreen.svg)](https://discord.gg/GsEFRM8)
-[![Gitter](https://img.shields.io/badge/chat-on%20gitter-brightgreen.svg)](https://gitter.im/PrismarineJS/general)
-[![Irc](https://img.shields.io/badge/chat-on%20irc-brightgreen.svg)](https://irc.gitter.im/)
-
-[![Try it on gitpod](https://img.shields.io/badge/try-on%20gitpod-brightgreen.svg)](https://gitpod.io/#https://github.com/PrismarineJS/prismarine-proxy)
-
 
 Provide features to build proxies using Prismarine modules
-
-## Contribute
-
-You're interested to help build this library ? Great !
-
-Either add [examples](https://github.com/PrismarineJS/prismarine-proxy/tree/master/examples) of cool proxies, or open [issues](https://github.com/PrismarineJS/prismarine-proxy/issues) to describe your ideas.
 
 ## Roadmap
 
