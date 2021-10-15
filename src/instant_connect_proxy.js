@@ -42,11 +42,9 @@ class InstantConnectProxy extends EventEmitter {
     toServer.on('login', (data) => {
       if (!this.clientIsOnline(toClient)) return
       this.emit('start', toClient, toServer)
-      const dimension = data.dimension === 0 ? -1 : 0
       toClient.write('respawn', {
         ...getPacket(ver, 'respawn'),
-        ...data,
-        dimension
+        ...data
       })
       toClient.write('respawn', data)
     })
