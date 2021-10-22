@@ -27,7 +27,8 @@ class InstantConnectProxy extends EventEmitter {
 
   onLogin (toClient) {
     // until the proxyClient logs in, lets send a login packet
-    const mcVersion = mcDataLoader(toClient.version).version.minecraftVersion
+    const mcData = mcDataLoader(toClient.version)
+    const mcVersion = mcData.version.minecraftVersion
     const ver = verMap[mcVersion] ?? mcVersion
     toClient.write('login', { ...getPacket(ver, 'login'), entityId: toClient.id })
 
@@ -42,12 +43,12 @@ class InstantConnectProxy extends EventEmitter {
     toServer.on('login', (data) => {
       if (!this.clientIsOnline(toClient)) return
       this.emit('start', toClient, toServer)
-      const dimension = data.dimension === 0 ? -1 : 0
-      toClient.write('respawn', {
-        ...getPacket(ver, 'respawn'),
-        ...data,
-        dimension
-      })
+      // https://github.com/VelocityPowered/Velocity/blob/aa210b3544556c46776976cddc45deb4ace9bb68/proxy/src/main/java/com/velocitypowered/proxy/connection/client/ClientPlaySessionHandler.java#L437
+      let dimension = data.dimension
+      if (mcData.isOlderThan('1.16')) {
+        dimension = data.dimension === 0 ? -1 : 0
+      }
+      toClient.write('respawn', { ...data, dimension })
       toClient.write('respawn', data)
     })
 
