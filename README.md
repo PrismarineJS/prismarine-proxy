@@ -36,7 +36,7 @@ const login = ['my@email.com', 'mypassword']
 
 const proxy = new InstantConnectProxy({
   loginHandler: (client) => { // client object has a username object, so you can store usernames with their respective logins
-    return { username: login[0], password: password[1] } // the login the proxy will connect to the server with
+    return { username: login[0], password: login[1] } // the login the proxy will connect to the server with
   },
   serverOptions: { // options for the local server shown to the vanilla client
     version: '1.8.9'
