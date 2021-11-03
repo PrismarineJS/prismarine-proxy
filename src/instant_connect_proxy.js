@@ -3,7 +3,15 @@ const { createServer, createClient } = require('minecraft-protocol')
 const packets = require('minecraft-packets').pc
 const mcDataLoader = require('minecraft-data')
 const PLAY_STATE = 'play'
-const getPacket = (ver, name) => packets[ver]['from-server'][name][0].json
+const verMap = {
+  '1.8.8': '1.8',
+  '1.8.9': '1.8'
+}
+function getPacket (ver, name) {
+  if (!packets[ver]) throw new Error(`Packets for version ${ver} aren't stored. This can be fixed by dumping them adding them to the verMap if similar packets are stored.`)
+  const packet = packets[ver]['from-server'][name][0].json
+  return packet
+}
 class InstantConnectProxy extends EventEmitter {
   constructor (options) {
     super()
@@ -19,7 +27,9 @@ class InstantConnectProxy extends EventEmitter {
 
   onLogin (toClient) {
     // until the proxyClient logs in, lets send a login packet
-    const ver = mcDataLoader(toClient.version).version.minecraftVersion
+    const mcData = mcDataLoader(toClient.version)
+    const mcVersion = mcData.version.minecraftVersion
+    const ver = verMap[mcVersion] ?? mcVersion
     toClient.write('login', { ...getPacket(ver, 'login'), entityId: toClient.id })
 
     const toServer = createClient({
@@ -33,25 +43,13 @@ class InstantConnectProxy extends EventEmitter {
     toServer.on('login', (data) => {
       if (!this.clientIsOnline(toClient)) return
       this.emit('start', toClient, toServer)
-      const dimension = data.dimension === 0 ? -1 : 0
-      toClient.write('respawn', {
-        ...getPacket(ver, 'respawn'),
-        ...{
-          dimension,
-          difficulty: data.difficulty,
-          gamemode: data.gameMode,
-          levelType: data.levelType
-        }
-      })
-      toClient.write('login', {
-        ...getPacket(ver, 'respawn'),
-        ...{
-          dimension: data.dimension,
-          difficulty: data.difficulty,
-          gamemode: data.gameMode,
-          levelType: data.levelType
-        }
-      })
+      // https://github.com/VelocityPowered/Velocity/blob/aa210b3544556c46776976cddc45deb4ace9bb68/proxy/src/main/java/com/velocitypowered/proxy/connection/client/ClientPlaySessionHandler.java#L437
+      let dimension = data.dimension
+      if (mcData.isOlderThan('1.16')) {
+        dimension = data.dimension === 0 ? -1 : 0
+      }
+      toClient.write('respawn', { ...data, dimension })
+      toClient.write('respawn', data)
     })
 
     toClient.on('packet', (data, meta) => {
