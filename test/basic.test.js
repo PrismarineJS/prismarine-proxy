@@ -1,7 +1,7 @@
-/* eslint-env jest */
+/* eslint-env mocha */
 
 describe('works', () => {
-  test('it works', () => {
+  it('it works', () => {
     console.log('done !')
   })
 })
