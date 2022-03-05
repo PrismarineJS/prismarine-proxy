@@ -13,7 +13,7 @@ Provide features to build low and high level proxies, see https://github.com/Pri
 Example of use case :
 * client side proxies :
   * make yourself a bot : do pathfinding like a bot, auto dig things, ...
-  * share your world view with a friend using prismarine-view
+  * share your world view with a friend using prismarine-viewer
 * server side proxies :
   * act as a proxy with many vanilla client servers, with portals or commands to switch
   * change things in server behavior : forbid going to some places, change the blocks, ...
