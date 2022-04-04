@@ -10,7 +10,7 @@ interface ServerOptions {
     serverOptions?: protocolServerOptions;
     clientOptions?: Partial<protocolClientOptions>;
 }
-interface ProxyEvents {
+type ProxyEvents = {
     incoming: (data: any, meta: PacketMeta, toClient: ServerClient, toServer: Client) => void;
     outgoing: (data: any, meta: PacketMeta, toClient: ServerClient, toServer: Client) => void;
     start: (toClient: ServerClient, toServer: Client) => void;
