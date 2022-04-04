@@ -32,6 +32,7 @@
     "debug": "^4.3.1",
     "minecraft-data": "^2.94.0",
     "minecraft-packets": "^1.5.0",
-    "minecraft-protocol": "^1.13.0"
+    "minecraft-protocol": "^1.13.0",
+    "typed-emitter": "^2.1.0"
   }
 }
