@@ -1,5 +1,9 @@
 ## History
 
+### 1.1.2
+
+- Update mcdata
+
 ### 1.1.1
 
 - Fix bug with InstantConnectProxy to make connecting possible
