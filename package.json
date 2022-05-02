@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/PrismarineJS/prismarine-proxy#readme",
   "devDependencies": {
-    "mocha": "^9.1.3",
+    "mocha": "^10.0.0",
     "prismarine-proxy": "file:.",
     "standard": "^16.0.1"
   },
