@@ -26,7 +26,7 @@
   "devDependencies": {
     "mocha": "^10.0.0",
     "prismarine-proxy": "file:.",
-    "standard": "^16.0.1"
+    "standard": "^17.0.0"
   },
   "dependencies": {
     "debug": "^4.3.1",
