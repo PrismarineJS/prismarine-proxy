@@ -7,11 +7,16 @@ const verMap = {
   '1.8.8': '1.8',
   '1.8.9': '1.8'
 }
-function getPacket (ver, name) {
-  if (!packets[ver]) throw new Error(`Packets for version ${ver} aren't stored. This can be fixed by adding them to the verMap if similar packets are stored.`)
-  const packet = packets[ver]['from-server'][name][0].json
+
+function getPacket (ver, name, mcData) {
+  let packet = packets[ver]?.['from-server']?.[name][0].json
+  if (name === 'login') {
+    packet = packet ?? mcData.loginPacket
+  }
+  if (!packet) throw new Error(`Packets for version ${ver} aren't stored. This can be fixed by adding them to the verMap if similar packets are stored.`)
   return packet
 }
+
 class InstantConnectProxy extends EventEmitter {
   constructor (options) {
     super()
@@ -30,7 +35,7 @@ class InstantConnectProxy extends EventEmitter {
     const mcData = mcDataLoader(toClient.version)
     const mcVersion = mcData.version.minecraftVersion
     const ver = verMap[mcVersion] ?? mcVersion
-    toClient.write('login', { ...getPacket(ver, 'login'), entityId: toClient.id })
+    toClient.write('login', { ...getPacket(ver, 'login', mcData), entityId: toClient.id })
 
     const toServer = createClient({
       ...this.options.clientOptions,
@@ -72,6 +77,7 @@ class InstantConnectProxy extends EventEmitter {
         this.emit('incoming', data, meta, toClient, toServer)
       }
     })
+
     toClient.once('end', () => {
       this.emit('end', toServer.username)
       this.endClient(toClient)
