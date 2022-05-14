@@ -1,5 +1,9 @@
 ## History
 
+### 1.1.3
+
+- Use minecraft-data's login packet if one is not in minecraft-packets
+
 ### 1.1.2
 
 - Update mcdata
