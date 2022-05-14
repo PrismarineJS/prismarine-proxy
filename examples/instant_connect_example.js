@@ -6,10 +6,11 @@ const proxy = new InstantConnectProxy({
   },
   clientOptions: {
     host: 'localhost',
-    version: '1.8.9'
+    version: '1.18.2'
   },
   serverOptions: {
-    version: '1.8.9'
+    version: '1.18.2',
+    port: 25566
   }
 })
 
