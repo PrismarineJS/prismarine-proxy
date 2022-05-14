@@ -8,7 +8,7 @@ const verMap = {
   '1.8.9': '1.8'
 }
 function getPacket (ver, name) {
-  if (!packets[ver]) throw new Error(`Packets for version ${ver} aren't stored. This can be fixed by dumping them adding them to the verMap if similar packets are stored.`)
+  if (!packets[ver]) throw new Error(`Packets for version ${ver} aren't stored. This can be fixed by adding them to the verMap if similar packets are stored.`)
   const packet = packets[ver]['from-server'][name][0].json
   return packet
 }
