@@ -13,7 +13,7 @@ function getPacket (ver, name, mcData) {
   if (name === 'login') {
     packet = packet ?? mcData.loginPacket
   }
-  if (!packet) throw new Error(`Packets for version ${ver} aren't stored. This can be fixed by dumping them adding them to the verMap if similar packets are stored.`)
+  if (!packet) throw new Error(`Packets for version ${ver} aren't stored. This can be fixed by adding them to the verMap if similar packets are stored.`)
   return packet
 }
 
