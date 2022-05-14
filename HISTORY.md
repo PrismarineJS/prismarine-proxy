@@ -1,5 +1,9 @@
 ## History
 
+### 1.1.4
+
+- Fix typescript types
+
 ### 1.1.3
 
 - Use minecraft-data's login packet if one is not in minecraft-packets
