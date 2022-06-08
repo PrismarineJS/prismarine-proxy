@@ -58,4 +58,6 @@ proxy.on('outgoing', (data, meta, toClient, toServer) => { // packets outgoing f
 })
 ```
 
-The name of the particles can be found [here](https://minecraft-data.prismarine.js.org/) , make sure to select the version you are playing on at the top then click protocol, more info about packets can be found [here](https://wiki.vg/Protocol) , make sure to select the version you are working with
+Information about packets can be found [here](https://minecraft-data.prismarine.js.org/), make sure to select the minecraft version at the top, then click protocol.
+
+More info about packets can be found [here](https://wiki.vg/Protocol), make sure to select the version you are working with
