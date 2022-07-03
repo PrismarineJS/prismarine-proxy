@@ -45,7 +45,7 @@ class InstantConnectProxy extends EventEmitter {
 
     this.toServerClients.set(toClient.id, toServer)
 
-    toServer.on('login', (data) => {
+    toServer.once('login', (data) => {
       if (!this.clientIsOnline(toClient)) return
       this.emit('start', toClient, toServer)
       // https://github.com/VelocityPowered/Velocity/blob/aa210b3544556c46776976cddc45deb4ace9bb68/proxy/src/main/java/com/velocitypowered/proxy/connection/client/ClientPlaySessionHandler.java#L437
