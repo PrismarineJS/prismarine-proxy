@@ -27,11 +27,10 @@ let silentchat = false
 proxy.on('incoming', (data, meta, toClient, toServer) => {
   if (meta.name === 'chat' && silentchat) return
 
-  toClient.write(meta.name, data)
+  toClient.write(meta.name, data)// block outgoing chat packets while in silent mode
 })
 
 proxy.on('outgoing', (data, meta, toClient, toServer) => {
-
   // sending back a chat packet to the client with the silentchat status
   // see: https://wiki.vg/Protocol#Chat_Message_.28clientbound.29 and https://minecraft-data.prismarine.js.org/?d=protocol#toClient_chat
   if (meta.name === 'chat' && data.message.startsWith('/silentchat')) {
