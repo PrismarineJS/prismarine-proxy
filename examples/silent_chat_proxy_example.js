@@ -27,7 +27,7 @@ let silentchat = false
 proxy.on('incoming', (data, meta, toClient, toServer) => {
   if (meta.name === 'chat' && silentchat) return
 
-  toClient.write(meta.name, data)// block outgoing chat packets while in silent mode
+  toClient.write(meta.name, data)
 })
 
 proxy.on('outgoing', (data, meta, toClient, toServer) => {
