@@ -32,11 +32,11 @@ This is a proxy that will allow you to instantly connect to the target, so you w
 ```js
 const { InstantConnectProxy } = require('prismarine-proxy')
 
-const login = ['my@email.com', 'mypassword']
+const login = 'my@email.com' // microsoft email or minecraft username
 
 const proxy = new InstantConnectProxy({
   loginHandler: (client) => { // client object has a username object, so you can store usernames with their respective logins
-    return { username: login[0], password: login[1] } // the login the proxy will connect to the server with
+    return { username: login, auth: 'microsoft' } // the login the proxy will connect to the server with
   },
   serverOptions: { // options for the local server shown to the vanilla client
     version: '1.8.9'
@@ -58,6 +58,4 @@ proxy.on('outgoing', (data, meta, toClient, toServer) => { // packets outgoing f
 })
 ```
 
-Information about packets can be found [here](https://minecraft-data.prismarine.js.org/), make sure to select the minecraft version at the top, then click protocol.
-
-More info about packets can be found [here](https://wiki.vg/Protocol), make sure to select the version you are working with
+Information about packets can be found [here](https://prismarinejs.github.io/minecraft-data/), make sure to select the minecraft version at the top, then click protocol.

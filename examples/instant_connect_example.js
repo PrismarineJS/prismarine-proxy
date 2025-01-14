@@ -1,8 +1,8 @@
 const { InstantConnectProxy } = require('prismarine-proxy')
 const proxy = new InstantConnectProxy({
   loginHandler: (client) => {
-    if (client.username === 'U9G') return { username: 'john' }
-    else return { username: client.username }
+    if (client.username === 'U9G') return { username: 'john', auth: 'microsoft' }
+    else return { username: client.username, auth: 'microsoft' }
   },
   clientOptions: {
     host: 'localhost',
