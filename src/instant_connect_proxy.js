@@ -4,8 +4,7 @@ const packets = require('minecraft-packets').pc
 const mcDataLoader = require('minecraft-data')
 const PLAY_STATE = 'play'
 const verMap = {
-  '1.8.8': '1.8',
-  '1.8.9': '1.8'
+  '1.8.9': '1.8.8'
 }
 
 function getPacket (ver, name, mcData) {
